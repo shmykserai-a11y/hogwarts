@@ -11,7 +11,9 @@ interface FarewellProps {
 
 const BG_URL = '/textures/journey/farewell/background.webp'
 const FG_URL = '/textures/journey/farewell/foreground.webp'
-const FONT_URL = withBasePath('/fonts/Cinzel.ttf')
+// Match the exact Cinzel "feel" used in the UI (top-left heading).
+// Using the static Bold TTF here makes TroikaText rendering consistent with the UI.
+const FONT_URL = withBasePath('/fonts/Cinzel-Bold.ttf')
 
 preloadJourneyLocation(BG_URL, FG_URL)
 
@@ -33,6 +35,7 @@ export function FarewellLocation({ position = [0, 0, 0], index = 13 }: FarewellP
                     maxWidth={0.7}
                     fontSize={0.07}
                     lineHeight={1.15}
+                    letterSpacing={0.04}
                     whiteSpace="normal"
                     overflowWrap="break-word"
                     textAlign="center"
@@ -40,11 +43,11 @@ export function FarewellLocation({ position = [0, 0, 0], index = 13 }: FarewellP
                     anchorY="middle"
                     color="#fff8e1"
                     fillOpacity={0.95}
-                    outlineWidth={0.0025}
+                    outlineWidth={0.0012}
                     outlineColor="#000000"
-                    outlineOpacity={0.75}
+                    outlineOpacity={0.9}
                 >
-                    {'Until we meet again at Hogwarts'}
+                    {'UNTIL WE MEET AGAIN AT\nHOGWARTS'}
                 </Text>
             </group>
         </JourneyLocationBase>

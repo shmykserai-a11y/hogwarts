@@ -11,6 +11,7 @@ import { HagridsHutHUD } from '@/components/journey/HagridsHutHUD'
 import { PensieveHUD } from '@/components/journey/PensieveHUD'
 import { JOURNEY_SEQUENCE } from '@/config/journey-sequence'
 import { Lock, Unlock } from 'lucide-react'
+import { BackgroundMusic } from '@/components/ui/BackgroundMusic'
 
 export default function JourneyPage() {
     // Attach event listeners for puzzle scrolling
@@ -55,6 +56,9 @@ export default function JourneyPage() {
                 <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>
                         Progression: {Math.min(Math.max(currentIdx + 1, 1), TOTAL_PUZZLES)} / {TOTAL_PUZZLES}
+                    </div>
+                    <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+                        <BackgroundMusic />
                     </div>
                     {isGateBlocking && (
                         <div style={{
