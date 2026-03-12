@@ -60,20 +60,23 @@ export default function JourneyPage() {
                     {Math.min(Math.max(currentIdx + 1, 1), TOTAL_PUZZLES)} / {TOTAL_PUZZLES}
                 </div>
 
-                <div>
-                    <h1 style={{ fontSize: '1.2rem', margin: 0, opacity: 0.9 }}>Journey to Hogwarts</h1>
-                    <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: '0.2rem 0 0 0', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                        Puzzle
-                    </p>
-                </div>
+                {/* Center stack under progression: music + scroll status */}
+                <div style={{
+                    position: 'absolute',
+                    top: '2.6rem',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '0.55rem',
+                    pointerEvents: 'auto',
+                }}>
+                    <BackgroundMusic />
 
-                <div style={{ textAlign: 'right' }}>
-                    <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-                        <BackgroundMusic />
-                    </div>
                     {isGateBlocking && (
                         <div style={{
-                            marginTop: '0.55rem',
+                            pointerEvents: 'none',
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.5rem',
@@ -90,9 +93,10 @@ export default function JourneyPage() {
                             <span>{meta?.gateHint ?? 'Solve the challenge to continue'} ↓</span>
                         </div>
                     )}
+
                     {isAtEnd && (
                         <div style={{
-                            marginTop: '0.55rem',
+                            pointerEvents: 'none',
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.5rem',
@@ -108,9 +112,10 @@ export default function JourneyPage() {
                             <span>Journey Complete</span>
                         </div>
                     )}
+
                     {!isGateBlocking && !isFinalGate && !isAtEnd && (
                         <div style={{
-                            marginTop: '0.55rem',
+                            pointerEvents: 'none',
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.5rem',
@@ -126,9 +131,10 @@ export default function JourneyPage() {
                             <span>Unlocked. Scroll ↑</span>
                         </div>
                     )}
+
                     {isFinalGate && !isFinalGateCleared && (
                         <div style={{
-                            marginTop: '0.55rem',
+                            pointerEvents: 'none',
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.5rem',
@@ -144,9 +150,10 @@ export default function JourneyPage() {
                             <span>{meta?.gateHint ?? 'Complete the final challenge'}</span>
                         </div>
                     )}
+
                     {isFinalGate && isFinalGateCleared && (
                         <div style={{
-                            marginTop: '0.55rem',
+                            pointerEvents: 'none',
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.5rem',
@@ -162,6 +169,16 @@ export default function JourneyPage() {
                             <span>Completed</span>
                         </div>
                     )}
+                </div>
+
+                <div>
+                    <h1 style={{ fontSize: '1.2rem', margin: 0, opacity: 0.9 }}>Journey to Hogwarts</h1>
+                    <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: '0.2rem 0 0 0', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                        Puzzle
+                    </p>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
                 </div>
             </div>
 

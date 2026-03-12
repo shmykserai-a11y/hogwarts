@@ -45,13 +45,19 @@ export function BackgroundMusic() {
     ]), [])
 
     const audioRef = useRef<HTMLAudioElement | null>(null)
-    const [enabled, setEnabled] = useState<boolean>(() => {
+    const initialEnabled = (() => {
         if (typeof window === 'undefined') return true
         return readState().enabled
-    })
-    const [musicState, setMusicState] = useState<MusicState>('playing')
+    })()
+    const [enabled, setEnabled] = useState<boolean>(initialEnabled)
+    const [musicState, setMusicState] = useState<MusicState>(initialEnabled ? 'playing' : 'paused')
 
     const trackIndexRef = useRef(0)
+    const enabledRef = useRef(enabled)
+
+    useEffect(() => {
+        enabledRef.current = enabled
+    }, [enabled])
 
     // Init audio element once.
     useEffect(() => {
@@ -72,7 +78,7 @@ export function BackgroundMusic() {
 
         const persistNow = () => {
             writeState({
-                enabled,
+                enabled: enabledRef.current,
                 trackIndex: trackIndexRef.current,
                 time: audio.currentTime || 0,
             })
@@ -83,7 +89,7 @@ export function BackgroundMusic() {
             audio.src = tracks[trackIndexRef.current]
             audio.currentTime = 0
             persistNow()
-            if (!enabled) return
+            if (!enabledRef.current) return
             void audio.play().then(() => setMusicState('playing')).catch(() => setMusicState('needs_gesture'))
         }
 
@@ -92,7 +98,7 @@ export function BackgroundMusic() {
         // Periodically persist playback position so a refresh feels continuous.
         const interval = setInterval(() => {
             if (!audioRef.current) return
-            if (!enabled) return
+            if (!enabledRef.current) return
             persistNow()
         }, 2000)
 
@@ -202,7 +208,9 @@ export function BackgroundMusic() {
                 {musicState === 'needs_gesture' ? '▶' : (enabled ? '🎵' : '🔇')}
             </button>
             <div style={{ whiteSpace: 'nowrap', opacity: musicState === 'needs_gesture' ? 0.95 : 0.85 }}>
-                {label}
+                <span style={{ textDecoration: (!enabled && musicState !== 'needs_gesture') ? 'line-through' : 'none' }}>
+                    {label}
+                </span>
             </div>
         </div>
     )
