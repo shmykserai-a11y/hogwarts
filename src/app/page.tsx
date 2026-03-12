@@ -1,66 +1,108 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import { CanvasContainer } from '@/components/3d/CanvasContainer'
+import { Navigation } from '@/components/ui/Navigation'
+import { TerminalOverlay } from '@/components/ui/Terminal'
+import { AcceptanceLetter } from '@/components/ui/AcceptanceLetter'
+import { JsSpellsOverlay } from '@/components/ui/JsSpellsOverlay'
+import { MemoryViewerOverlay } from '@/components/ui/MemoryViewerOverlay'
+import { useStore } from '@/lib/store'
+import { useScrollManager } from '@/hooks/use-scroll-progress'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Home() {
+  useScrollManager()
+
+  const { isTerminalOpen, setTerminalOpen, activeRoom, setActiveRoom, hasReadLetter } = useStore()
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
+    <>
+      <AcceptanceLetter />
+
+      {hasReadLetter && <Navigation onOpenTerminal={() => setTerminalOpen(!isTerminalOpen)} />}
+      <JsSpellsOverlay />
+      <MemoryViewerOverlay />
+
+      <TerminalOverlay
+        isOpen={isTerminalOpen}
+        onClose={() => setTerminalOpen(false)}
+      />
+
+      <AnimatePresence>
+        {activeRoom !== 'hallway' && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            style={{
+              position: 'fixed',
+              bottom: '2rem',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 100,
+              pointerEvents: 'auto'
+            }}
+          >
+            <button
+              className="glass"
+              onClick={() => setActiveRoom('hallway')}
+              style={{
+                padding: '0.8rem 2rem',
+                fontSize: '1rem',
+                fontFamily: "'Cinzel', serif",
+                color: '#fff',
+                cursor: 'pointer',
+                border: '1px solid rgba(255,255,255,0.2)',
+                background: 'rgba(0,0,0,0.6)'
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+              Exit Room
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Fixed 3D Canvas — sits at z-index 0, fills viewport */}
+      <CanvasContainer />
+
+      {/*
+        Scroll DOM overlay — MUST have pointerEvents: 'none' so click/hover
+        events fall through to the canvas underneath.
+        Only specific UI elements get pointerEvents: 'auto'.
+      */}
+      <div style={{ minHeight: '500vh', position: 'relative', pointerEvents: 'none' }}>
+
+        {/* HUD title — pointerEvents auto so it's readable (not interactive) */}
+        <div
+          className="glass"
+          style={{
+            position: 'fixed',
+            top: '5rem', /* Moved down so it doesn't overlap global nav */
+            left: '50%',
+            transform: 'translateX(-50%)',
+            padding: '1rem 2.5rem',
+            textAlign: 'center',
+            zIndex: 10,
+            pointerEvents: 'none',
+          }}
+        >
+          <h1 className="heading-magic" style={{ fontSize: '1.5rem', marginBottom: '0.4rem' }}>
+            The Frontend Sorceress's Tale
+          </h1>
+          <p style={{ opacity: 0.7, fontSize: '0.85rem' }}>
+            Scroll to travel through the Z-axis ↓
           </p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+
+        {/* Scroll landmarks — invisible divs for each section height */}
+        <div style={{ height: '100vh' }} />
+        <div style={{ height: '100vh' }} />
+        <div style={{ height: '100vh' }} />
+        <div style={{ height: '100vh' }} />
+        <div style={{ height: '100vh' }} />
+        <div style={{ height: '100vh' }} />
+        <div style={{ height: '100vh' }} />
+      </div>
+    </>
+  )
 }
