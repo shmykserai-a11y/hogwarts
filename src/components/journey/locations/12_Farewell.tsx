@@ -23,30 +23,30 @@ export function FarewellLocation({ position = [0, 0, 0], index = 13 }: FarewellP
             bgUrl={BG_URL}
             fgUrl={FG_URL}
             bobbingMode="z"
-            fgChildren={
-                <group position={[0, 0, 0.18]}>
-                    {/* Text is authored in normalized [-0.5..0.5] space (JourneyLayer scales it). */}
-                    <Text
-                        font={FONT_URL}
-                        position={[0, 0.16, 0.001]}
-                        maxWidth={0.7}
-                        fontSize={0.07}
-                        lineHeight={1.15}
-                        whiteSpace="normal"
-                        overflowWrap="break-word"
-                        textAlign="center"
-                        anchorX="center"
-                        anchorY="middle"
-                        color="#fff8e1"
-                        fillOpacity={0.95}
-                        outlineWidth={0.01}
-                        outlineColor="#000000"
-                        outlineOpacity={0.85}
-                    >
-                        {'Until we meet again at Hogwarts'}
-                    </Text>
-                </group>
-            }
-        />
+        >
+            {/* Text sits between BG and FG (so it won't cover the heroes). */}
+            <group position={[0, 0, 0.02]}>
+                {/* Text is authored in normalized [-0.5..0.5] space (JourneyLayer scales it). */}
+                <Text
+                    font={FONT_URL}
+                    position={[0, 0.16, 0.001]}
+                    maxWidth={0.7}
+                    fontSize={0.07}
+                    lineHeight={1.15}
+                    whiteSpace="normal"
+                    overflowWrap="break-word"
+                    textAlign="center"
+                    anchorX="center"
+                    anchorY="middle"
+                    color="#fff8e1"
+                    fillOpacity={0.95}
+                    outlineWidth={0.0025}
+                    outlineColor="#000000"
+                    outlineOpacity={0.75}
+                >
+                    {'Until we meet again at Hogwarts'}
+                </Text>
+            </group>
+        </JourneyLocationBase>
     )
 }
