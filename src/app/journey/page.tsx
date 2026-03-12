@@ -46,6 +46,20 @@ export default function JourneyPage() {
                 color: '#fff8e1',
                 textShadow: '0 2px 4px rgba(0,0,0,0.5)'
             }}>
+                {/* Centered current position indicator */}
+                <div style={{
+                    position: 'absolute',
+                    top: '1.4rem',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    fontSize: '0.9rem',
+                    opacity: 0.85,
+                    letterSpacing: '0.6px',
+                    whiteSpace: 'nowrap',
+                }}>
+                    {Math.min(Math.max(currentIdx + 1, 1), TOTAL_PUZZLES)} / {TOTAL_PUZZLES}
+                </div>
+
                 <div>
                     <h1 style={{ fontSize: '1.2rem', margin: 0, opacity: 0.9 }}>Journey to Hogwarts</h1>
                     <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: '0.2rem 0 0 0', textTransform: 'uppercase', letterSpacing: '2px' }}>
@@ -54,9 +68,6 @@ export default function JourneyPage() {
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>
-                        Progression: {Math.min(Math.max(currentIdx + 1, 1), TOTAL_PUZZLES)} / {TOTAL_PUZZLES}
-                    </div>
                     <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-end' }}>
                         <BackgroundMusic />
                     </div>

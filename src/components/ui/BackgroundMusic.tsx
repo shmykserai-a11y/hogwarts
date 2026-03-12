@@ -3,24 +3,34 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { withBasePath } from '@/lib/base-path'
 
-type MusicState = 'playing' | 'muted' | 'needs_gesture'
+type MusicState = 'playing' | 'paused' | 'needs_gesture'
 
-const STORAGE_KEY = 'hogwarts_music_v1'
+const STORAGE_KEY = 'hogwarts_music_v2'
 
-function readMuted(): boolean {
+type Persisted = {
+    enabled: boolean
+    trackIndex: number
+    time: number
+}
+
+function readState(): Persisted {
     try {
         const raw = localStorage.getItem(STORAGE_KEY)
-        if (!raw) return false
+        if (!raw) return { enabled: true, trackIndex: 0, time: 0 }
         const parsed = JSON.parse(raw)
-        return !!parsed?.muted
+        return {
+            enabled: parsed?.enabled !== false,
+            trackIndex: Number.isFinite(parsed?.trackIndex) ? parsed.trackIndex : 0,
+            time: Number.isFinite(parsed?.time) ? parsed.time : 0,
+        }
     } catch {
-        return false
+        return { enabled: true, trackIndex: 0, time: 0 }
     }
 }
 
-function writeMuted(muted: boolean) {
+function writeState(next: Persisted) {
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ muted }))
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
     } catch {
         // ignore
     }
@@ -35,81 +45,99 @@ export function BackgroundMusic() {
     ]), [])
 
     const audioRef = useRef<HTMLAudioElement | null>(null)
-    const [muted, setMuted] = useState(false)
+    const [enabled, setEnabled] = useState<boolean>(() => {
+        if (typeof window === 'undefined') return true
+        return readState().enabled
+    })
     const [musicState, setMusicState] = useState<MusicState>('playing')
+
     const trackIndexRef = useRef(0)
 
     // Init audio element once.
     useEffect(() => {
-        setMuted(readMuted())
+        const persisted = readState()
+        trackIndexRef.current = Math.max(0, Math.min(tracks.length - 1, persisted.trackIndex))
 
         const audio = new Audio()
         audioRef.current = audio
         audio.preload = 'auto'
         audio.loop = false
         audio.volume = 0.9
+        audio.src = tracks[trackIndexRef.current]
+
+        if (persisted.time > 0) {
+            // Best-effort resume (may be clamped by the browser until metadata is loaded).
+            audio.currentTime = persisted.time
+        }
+
+        const persistNow = () => {
+            writeState({
+                enabled,
+                trackIndex: trackIndexRef.current,
+                time: audio.currentTime || 0,
+            })
+        }
 
         const onEnded = () => {
             trackIndexRef.current = (trackIndexRef.current + 1) % tracks.length
             audio.src = tracks[trackIndexRef.current]
-            void audio.play().catch(() => setMusicState('needs_gesture'))
+            audio.currentTime = 0
+            persistNow()
+            if (!enabled) return
+            void audio.play().then(() => setMusicState('playing')).catch(() => setMusicState('needs_gesture'))
         }
 
         audio.addEventListener('ended', onEnded)
 
+        // Periodically persist playback position so a refresh feels continuous.
+        const interval = setInterval(() => {
+            if (!audioRef.current) return
+            if (!enabled) return
+            persistNow()
+        }, 2000)
+
+        const onVis = () => {
+            if (document.visibilityState === 'hidden') persistNow()
+        }
+        document.addEventListener('visibilitychange', onVis)
+
         return () => {
+            clearInterval(interval)
+            document.removeEventListener('visibilitychange', onVis)
+            persistNow()
             audio.pause()
             audio.removeEventListener('ended', onEnded)
             audioRef.current = null
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tracks])
 
-    // Keep audio muted state in sync.
-    useEffect(() => {
-        const audio = audioRef.current
-        if (!audio) return
-        audio.muted = muted
-        writeMuted(muted)
-        setMusicState(muted ? 'muted' : 'playing')
-    }, [muted])
-
-    // Autoplay attempt (may be blocked by the browser; we'll show a "tap to enable" affordance).
+    // Keep enabled state in sync (pause/resume and persist).
     useEffect(() => {
         const audio = audioRef.current
         if (!audio) return
 
-        // Start from track 1 and try to play immediately.
-        trackIndexRef.current = 0
-        audio.src = tracks[0]
-
-        if (muted) return
-
-        void audio.play().catch(() => {
-            // Most mobile browsers require a user gesture for audio playback.
-            setMusicState('needs_gesture')
+        const persisted = readState()
+        writeState({
+            enabled,
+            trackIndex: trackIndexRef.current,
+            time: persisted.time ?? audio.currentTime ?? 0,
         })
-    }, [tracks, muted])
 
-    const toggleMute = async () => {
-        const audio = audioRef.current
-        const next = !muted
-        setMuted(next)
-
-        if (!audio) return
-        if (!next) {
-            // If unmuting, try to resume playback.
-            try {
-                await audio.play()
-                setMusicState('playing')
-            } catch {
-                setMusicState('needs_gesture')
-            }
-        } else {
-            setMusicState('muted')
+        if (!enabled) {
+            audio.pause()
+            setMusicState('paused')
+            return
         }
+
+        void audio.play().then(() => setMusicState('playing')).catch(() => setMusicState('needs_gesture'))
+    }, [enabled])
+
+    const toggle = () => {
+        setEnabled((v) => !v)
     }
 
-    const enable = async () => {
+    const enableGesture = async () => {
         const audio = audioRef.current
         if (!audio) return
         try {
@@ -122,7 +150,7 @@ export function BackgroundMusic() {
 
     const label = musicState === 'playing'
         ? 'Music: On'
-        : musicState === 'muted'
+        : musicState === 'paused'
             ? 'Music: Off'
             : 'Tap to enable music'
 
@@ -132,7 +160,7 @@ export function BackgroundMusic() {
 
     const bg = musicState === 'needs_gesture'
         ? 'rgba(10, 14, 23, 0.46)'
-        : 'rgba(10, 14, 23, 0.32)'
+        : enabled ? 'rgba(10, 14, 23, 0.32)' : 'rgba(10, 14, 23, 0.22)'
 
     return (
         <div style={{
@@ -148,9 +176,10 @@ export function BackgroundMusic() {
             fontSize: '0.78rem',
             letterSpacing: '0.35px',
             userSelect: 'none',
+            opacity: enabled ? 1 : 0.72,
         }}>
             <button
-                onClick={musicState === 'needs_gesture' ? enable : toggleMute}
+                onClick={musicState === 'needs_gesture' ? enableGesture : toggle}
                 style={{
                     pointerEvents: 'auto',
                     display: 'inline-flex',
@@ -160,15 +189,17 @@ export function BackgroundMusic() {
                     height: '28px',
                     borderRadius: '10px',
                     border: '1px solid rgba(255, 255, 255, 0.16)',
-                    background: musicState === 'needs_gesture' ? 'rgba(255, 204, 68, 0.16)' : 'rgba(255, 255, 255, 0.06)',
+                    background: musicState === 'needs_gesture'
+                        ? 'rgba(255, 204, 68, 0.16)'
+                        : enabled ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.03)',
                     color: '#fff8e1',
                     cursor: 'pointer',
                     fontFamily: "'Cinzel', serif",
                 }}
-                title={musicState === 'needs_gesture' ? 'Enable music' : (muted ? 'Unmute' : 'Mute')}
-                aria-label={musicState === 'needs_gesture' ? 'Enable music' : (muted ? 'Unmute' : 'Mute')}
+                title={musicState === 'needs_gesture' ? 'Enable music' : (enabled ? 'Turn music off' : 'Turn music on')}
+                aria-label={musicState === 'needs_gesture' ? 'Enable music' : (enabled ? 'Turn music off' : 'Turn music on')}
             >
-                {musicState === 'needs_gesture' ? '▶' : (muted ? '🔇' : '🎵')}
+                {musicState === 'needs_gesture' ? '▶' : (enabled ? '🎵' : '🔇')}
             </button>
             <div style={{ whiteSpace: 'nowrap', opacity: musicState === 'needs_gesture' ? 0.95 : 0.85 }}>
                 {label}
@@ -176,4 +207,3 @@ export function BackgroundMusic() {
         </div>
     )
 }
-
