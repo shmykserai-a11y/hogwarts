@@ -2,15 +2,18 @@
 
 import { Text } from '@react-three/drei'
 import { JourneyLocationBase, preloadJourneyLocation } from './JourneyLocationBase'
+import { withBasePath } from '@/lib/base-path'
 
 interface FarewellProps {
     position?: [number, number, number]
     index?: number
 }
 
-// Placeholder background for now (we can swap this to a dedicated photo later).
-const BG_URL = '/textures/journey/library/bg.webp'
-preloadJourneyLocation(BG_URL)
+const BG_URL = '/textures/journey/farewell/background.webp'
+const FG_URL = '/textures/journey/farewell/foreground.webp'
+const FONT_URL = withBasePath('/fonts/Cinzel.ttf')
+
+preloadJourneyLocation(BG_URL, FG_URL)
 
 export function FarewellLocation({ position = [0, 0, 0], index = 13 }: FarewellProps) {
     return (
@@ -18,30 +21,32 @@ export function FarewellLocation({ position = [0, 0, 0], index = 13 }: FarewellP
             index={index}
             position={position}
             bgUrl={BG_URL}
-            bobbingMode="y"
-        >
-            {/* Centered closing note */}
-            <group position={[0, 0, 0.2]}>
-                <Text
-                    position={[0, 0, 0.001]}
-                    maxWidth={0.85}
-                    fontSize={0.065}
-                    lineHeight={1.25}
-                    whiteSpace="normal"
-                    overflowWrap="break-word"
-                    textAlign="center"
-                    anchorX="center"
-                    anchorY="middle"
-                    color="#fff8e1"
-                    fillOpacity={0.95}
-                    outlineWidth={0.004}
-                    outlineColor="#000000"
-                    outlineOpacity={0.35}
-                >
-                    {'Hope the adventure was pleasant.\nSee you again at Hogwarts!'}
-                </Text>
-            </group>
-        </JourneyLocationBase>
+            fgUrl={FG_URL}
+            bobbingMode="z"
+            fgChildren={
+                <group position={[0, 0, 0.18]}>
+                    {/* Text is authored in normalized [-0.5..0.5] space (JourneyLayer scales it). */}
+                    <Text
+                        font={FONT_URL}
+                        position={[0, 0.16, 0.001]}
+                        maxWidth={0.7}
+                        fontSize={0.07}
+                        lineHeight={1.15}
+                        whiteSpace="normal"
+                        overflowWrap="break-word"
+                        textAlign="center"
+                        anchorX="center"
+                        anchorY="middle"
+                        color="#fff8e1"
+                        fillOpacity={0.95}
+                        outlineWidth={0.01}
+                        outlineColor="#000000"
+                        outlineOpacity={0.85}
+                    >
+                        {'Until we meet again at Hogwarts'}
+                    </Text>
+                </group>
+            }
+        />
     )
 }
-

@@ -25,6 +25,7 @@ export default function JourneyPage() {
     const isGateCleared = isGateHere && maxUnlockedIndex > currentIdx
     const isFinalGate = isGateHere && currentIdx === TOTAL_PUZZLES - 1
     const isFinalGateCleared = isFinalGate && !!(meta && completedJourney[meta.key])
+    const isAtEnd = currentIdx >= TOTAL_PUZZLES - 1
 
     return (
         <main style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#0a0e17' }}>
@@ -74,7 +75,25 @@ export default function JourneyPage() {
                             <span>{meta?.gateHint ?? 'Solve the challenge to continue'} ↓</span>
                         </div>
                     )}
-                    {!isGateBlocking && !isFinalGate && (
+                    {isAtEnd && (
+                        <div style={{
+                            marginTop: '0.55rem',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: '0.45rem 0.6rem',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(0, 255, 170, 0.25)',
+                            background: 'rgba(10, 14, 23, 0.30)',
+                            color: 'rgba(210, 255, 240, 0.95)',
+                            fontSize: '0.8rem',
+                            letterSpacing: '0.4px',
+                        }}>
+                            <Unlock size={16} />
+                            <span>Journey Complete</span>
+                        </div>
+                    )}
+                    {!isGateBlocking && !isFinalGate && !isAtEnd && (
                         <div style={{
                             marginTop: '0.55rem',
                             display: 'inline-flex',
