@@ -1,7 +1,8 @@
 import { create } from 'zustand'
+import { withBasePath } from '@/lib/base-path'
 
 // Base path for pensieve images
-const IMG = '/textures/journey/pensieve'
+const IMG = withBasePath('/textures/journey/pensieve')
 
 export interface PensievePair {
     id: string

@@ -9,6 +9,7 @@ import { JourneyLocationBase, preloadJourneyLocation } from './JourneyLocationBa
 import { usePuzzleLocationIndex } from '@/hooks/use-puzzle-scroll'
 import { HitZone } from '../HitZone'
 import { useStore } from '@/lib/store'
+import { withBasePath } from '@/lib/base-path'
 
 interface InvitationLetterProps {
     position?: [number, number, number]
@@ -17,7 +18,7 @@ interface InvitationLetterProps {
 
 const ENVELOPE_URL = '/textures/journey/invitation-letter/envelope.webp'
 const LETTER_URL = '/textures/journey/invitation-letter/letter.webp'
-const HAND_FONT_URL = '/fonts/DancingScript.ttf'
+const HAND_FONT_URL = withBasePath('/fonts/DancingScript.ttf')
 
 const DEFAULT_SEAL_ZONE = {
     // Defaults based on the zone you tuned in the HitZone debugger screenshot.
@@ -276,7 +277,7 @@ export function InvitationLetter({ position = [0, 0, 0], index = 0 }: Invitation
     const sealKey = `${sealZone.x.toFixed(3)}:${sealZone.y.toFixed(3)}:${sealZone.w.toFixed(3)}:${sealZone.h.toFixed(3)}`
 
     // Load one of the textures to get its aspect ratio. (Both images share dimensions.)
-    const letterTexture = useTexture(LETTER_URL)
+    const letterTexture = useTexture(withBasePath(LETTER_URL))
     const letterAspect = useMemo(() => {
         const img = letterTexture.image as HTMLImageElement | undefined
         const w = img?.naturalWidth ?? 2752

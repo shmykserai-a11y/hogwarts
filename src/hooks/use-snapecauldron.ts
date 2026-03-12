@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { withBasePath } from '@/lib/base-path'
 
 export type PotionType = 'livingDeath' | 'polyjuice' | 'boils'
 
@@ -24,19 +25,19 @@ export const POTION_RECIPES: Record<PotionType, { name: string; ingredients: str
 }
 
 export const ALL_INGREDIENTS: IngredientDef[] = [
-    { id: 'asphodel_roots', name: 'Powdered Root of Asphodel', url: '/textures/journey/snape-cauldron/ingredients/asphodel_roots.webp' },
-    { id: 'wormwood_tincture', name: 'Infusion of Wormwood', url: '/textures/journey/snape-cauldron/ingredients/wormwood_tincture.webp' },
-    { id: 'sopophorous_beans', name: 'Sopophorous Beans', url: '/textures/journey/snape-cauldron/ingredients/sopophorous_beans.webp' },
-    { id: 'lacewing_flies', name: 'Lacewing Flies', url: '/textures/journey/snape-cauldron/ingredients/lacewing_flies.webp' },
-    { id: 'knotgrass_stalks', name: 'Knotgrass Stalks', url: '/textures/journey/snape-cauldron/ingredients/knotgrass_stalks.webp' },
-    { id: 'leeches', name: 'Leeches', url: '/textures/journey/snape-cauldron/ingredients/leeches.webp' },
-    { id: 'bicorn_horn', name: 'Horn of Bicorn', url: '/textures/journey/snape-cauldron/ingredients/bicorn_horn.webp' },
-    { id: 'boomslang_skin', name: 'Shredded Boomslang Skin', url: '/textures/journey/snape-cauldron/ingredients/boomslang_skin.webp' },
-    { id: 'human_hair', name: 'Human Hair', url: '/textures/journey/snape-cauldron/ingredients/human_hair.webp' },
-    { id: 'dried_nettles', name: 'Dried Nettles', url: '/textures/journey/snape-cauldron/ingredients/dried_nettles.webp' },
-    { id: 'snake_fangs', name: 'Crushed Snake Fangs', url: '/textures/journey/snape-cauldron/ingredients/snake_fangs.webp' },
-    { id: 'horned_slugs', name: 'Horned Slugs', url: '/textures/journey/snape-cauldron/ingredients/horned_slugs.webp' },
-    { id: 'porcupine_quills', name: 'Porcupine Quills', url: '/textures/journey/snape-cauldron/ingredients/porcupine_quills.webp' },
+    { id: 'asphodel_roots', name: 'Powdered Root of Asphodel', url: withBasePath('/textures/journey/snape-cauldron/ingredients/asphodel_roots.webp') },
+    { id: 'wormwood_tincture', name: 'Infusion of Wormwood', url: withBasePath('/textures/journey/snape-cauldron/ingredients/wormwood_tincture.webp') },
+    { id: 'sopophorous_beans', name: 'Sopophorous Beans', url: withBasePath('/textures/journey/snape-cauldron/ingredients/sopophorous_beans.webp') },
+    { id: 'lacewing_flies', name: 'Lacewing Flies', url: withBasePath('/textures/journey/snape-cauldron/ingredients/lacewing_flies.webp') },
+    { id: 'knotgrass_stalks', name: 'Knotgrass Stalks', url: withBasePath('/textures/journey/snape-cauldron/ingredients/knotgrass_stalks.webp') },
+    { id: 'leeches', name: 'Leeches', url: withBasePath('/textures/journey/snape-cauldron/ingredients/leeches.webp') },
+    { id: 'bicorn_horn', name: 'Horn of Bicorn', url: withBasePath('/textures/journey/snape-cauldron/ingredients/bicorn_horn.webp') },
+    { id: 'boomslang_skin', name: 'Shredded Boomslang Skin', url: withBasePath('/textures/journey/snape-cauldron/ingredients/boomslang_skin.webp') },
+    { id: 'human_hair', name: 'Human Hair', url: withBasePath('/textures/journey/snape-cauldron/ingredients/human_hair.webp') },
+    { id: 'dried_nettles', name: 'Dried Nettles', url: withBasePath('/textures/journey/snape-cauldron/ingredients/dried_nettles.webp') },
+    { id: 'snake_fangs', name: 'Crushed Snake Fangs', url: withBasePath('/textures/journey/snape-cauldron/ingredients/snake_fangs.webp') },
+    { id: 'horned_slugs', name: 'Horned Slugs', url: withBasePath('/textures/journey/snape-cauldron/ingredients/horned_slugs.webp') },
+    { id: 'porcupine_quills', name: 'Porcupine Quills', url: withBasePath('/textures/journey/snape-cauldron/ingredients/porcupine_quills.webp') },
 ]
 
 type GameState = 'playing' | 'brewing' | 'success' | 'failure'

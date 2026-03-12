@@ -5,10 +5,11 @@ import { useTexture, PresentationControls } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useControls, folder } from 'leva'
 import { useDebugTransform } from '@/hooks/useDebugTransform'
+import { withBasePath } from '@/lib/base-path'
 import * as THREE from 'three'
 
 export function FatLadyPortrait({ position = [0, 0, 0] }: { position?: [number, number, number] }) {
-    const colorMap = useTexture('/textures/fatlady/Fat Lady_frame_transparent.png')
+    const colorMap = useTexture(withBasePath('/textures/fatlady/Fat Lady_frame_transparent.png'))
     useMemo(() => { colorMap.colorSpace = THREE.SRGBColorSpace }, [colorMap])
 
     // ─── Debug controls ───────────────────────────────────────────────────────

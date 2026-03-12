@@ -5,6 +5,7 @@ import { useFrame, useThree, ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 
 import { useFruitNinjaStore, TOTAL_TO_WIN } from '@/hooks/use-fruitninja'
+import { withBasePath } from '@/lib/base-path'
 
 interface CandleObj {
     id: number
@@ -124,8 +125,8 @@ export function FruitNinjaCandles({
 
                 if (uncaughtCount < MAX_CANDLES_ON_SCREEN) {
                     const candleId = Math.floor(Math.random() * 5) + 1 // 1 to 5
-                    const unlitUrl = `/textures/journey/great-hall/candle-${candleId}.webp`
-                    const litUrl = `/textures/journey/great-hall/candle_flame-${candleId}.webp`
+                    const unlitUrl = withBasePath(`/textures/journey/great-hall/candle-${candleId}.webp`)
+                    const litUrl = withBasePath(`/textures/journey/great-hall/candle_flame-${candleId}.webp`)
 
                     const newCandle: CandleObj = {
                         id: Date.now() + Math.random(),

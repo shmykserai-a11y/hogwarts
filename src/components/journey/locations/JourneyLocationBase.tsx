@@ -5,6 +5,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import { usePuzzleLocationIndex } from '@/hooks/use-puzzle-scroll'
+import { withBasePath } from '@/lib/base-path'
 
 export interface JourneyLayerProps {
     textureUrl: string
@@ -23,7 +24,7 @@ export function JourneyLayer({
     materialRef, sizeMultiplier = 1.1, meshRef, fog = true,
     children 
 }: JourneyLayerProps & { children?: React.ReactNode }) {
-    const texture = useTexture(textureUrl)
+    const texture = useTexture(withBasePath(textureUrl))
     const { camera, size } = useThree()
 
     const { planeW, planeH } = useMemo(() => {
@@ -209,6 +210,6 @@ export function JourneyLocationBase({ index, position, scale = [1, 1, 1], bgUrl,
 }
 
 export function preloadJourneyLocation(bgUrl: string, fgUrl?: string) {
-    useTexture.preload(bgUrl)
-    if (fgUrl) useTexture.preload(fgUrl)
+    useTexture.preload(withBasePath(bgUrl))
+    if (fgUrl) useTexture.preload(withBasePath(fgUrl))
 }
