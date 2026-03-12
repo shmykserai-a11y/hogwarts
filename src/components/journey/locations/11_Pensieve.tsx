@@ -6,7 +6,7 @@ import { usePensieveStore } from '@/hooks/use-pensieve'
 import { usePuzzleLocationIndex } from '@/hooks/use-puzzle-scroll'
 import { useStore } from '@/lib/store'
 
-const BG_URL = '/textures/journey/pensieve/background.png'
+const BG_URL = '/textures/journey/pensieve/background.webp'
 
 preloadJourneyLocation(BG_URL)
 
