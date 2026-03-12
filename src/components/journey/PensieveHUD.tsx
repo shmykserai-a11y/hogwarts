@@ -16,6 +16,21 @@ const glass: React.CSSProperties = {
 export function PensieveHUD() {
     const { isActive, phase, questions, currentIndex, answers, imageFlip, startGame, answer, resetGame } = usePensieveStore()
 
+    // Preload current + next image to keep transitions smooth on slower networks (notably in prod).
+    useEffect(() => {
+        if (!isActive) return
+        if (phase !== 'playing') return
+        const q = questions[currentIndex]
+        if (!q) return
+        const curr = new Image()
+        curr.src = q.imageUrl
+        const next = questions[currentIndex + 1]
+        if (next) {
+            const nxt = new Image()
+            nxt.src = next.imageUrl
+        }
+    }, [isActive, phase, questions, currentIndex])
+
     if (!isActive) return null
 
     const q = questions[currentIndex]

@@ -94,18 +94,20 @@ export const usePensieveStore = create<PensieveState>((set, get) => ({
         const correct = playerSaysReal === q.isReal
         const newAnswers = [...answers, correct]
 
-        // Brief feedback flash
-        set({ imageFlip: true })
+        // Brief feedback flash.
+        // Important: keep updates atomic so we never render the old image with `imageFlip=false`
+        // between the fade-out and the index switch (this was visible in prod).
+        set({ imageFlip: true, answers: newAnswers })
         setTimeout(() => {
-            get().setImageFlip(false)
-            const nextIndex = currentIndex + 1
-            if (nextIndex >= questions.length) {
-                set({ answers: newAnswers, phase: 'result' })
-            } else {
-                set({ answers: newAnswers, currentIndex: nextIndex })
+            const state = get()
+            const nextIndex = state.currentIndex + 1
+            if (nextIndex >= state.questions.length) {
+                set({ imageFlip: false, answers: newAnswers, phase: 'result' })
+                return
             }
+
+            set({ imageFlip: false, answers: newAnswers, currentIndex: nextIndex })
         }, 350)
-        set({ answers: newAnswers })
     },
 
     resetGame: () => set({

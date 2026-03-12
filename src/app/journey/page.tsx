@@ -45,9 +45,9 @@ export default function JourneyPage() {
                 textShadow: '0 2px 4px rgba(0,0,0,0.5)'
             }}>
                 <div>
-                    <h1 style={{ fontSize: '1.2rem', margin: 0, opacity: 0.9 }}>The Frontend Sorceress's Tale</h1>
+                    <h1 style={{ fontSize: '1.2rem', margin: 0, opacity: 0.9 }}>Journey to Hogwarts</h1>
                     <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: '0.2rem 0 0 0', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                        Puzzle Journey
+                        Puzzle
                     </p>
                 </div>
 

@@ -27,6 +27,7 @@ export function SnapeCauldron({ position = [0, 0, 0], index = 4 }: SnapeCauldron
         setIsActive, 
         setBrewProgress, 
         evaluateBrew, 
+        toggleHint,
         gameState,
         addedIngredients
     } = useSnapeCauldronStore()
@@ -79,6 +80,12 @@ export function SnapeCauldron({ position = [0, 0, 0], index = 4 }: SnapeCauldron
         }
     }
 
+    const handleHintDown = (e: any) => {
+        // Parchment hint zone on the table: toggles the recipe hint overlay.
+        e.stopPropagation()
+        toggleHint()
+    }
+
     return (
         <>
             <JourneyLocationBase
@@ -89,16 +96,27 @@ export function SnapeCauldron({ position = [0, 0, 0], index = 4 }: SnapeCauldron
                 disableBobbing={true}
                 fgChildren={
                     isActive && (
-                        <HitZone 
-                            id="cauldron_brew"
-                            initialX={0.032}
-                            initialY={-0.225}
-                            initialW={0.174}
-                            initialH={0.261}
-                            onPointerDown={handleCauldronDown}
-                            onPointerUp={cancelBrew}
-                            onPointerOut={cancelBrew}
-                        />
+                        <>
+                            <HitZone 
+                                id="cauldron_brew"
+                                initialX={0.032}
+                                initialY={-0.225}
+                                initialW={0.174}
+                                initialH={0.261}
+                                onPointerDown={handleCauldronDown}
+                                onPointerUp={cancelBrew}
+                                onPointerOut={cancelBrew}
+                            />
+
+                            <HitZone
+                                id="cauldron_hint"
+                                initialX={-0.13}
+                                initialY={-0.36}
+                                initialW={0.15}
+                                initialH={0.15}
+                                onPointerDown={handleHintDown}
+                            />
+                        </>
                     )
                 }
             />

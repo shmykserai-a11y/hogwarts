@@ -87,7 +87,7 @@ export default function Test3DPage() {
           }}
         >
           <h1 className="heading-magic" style={{ fontSize: '1.5rem', marginBottom: '0.4rem' }}>
-            The Frontend Sorceress's Tale
+            Journey to Hogwarts
           </h1>
           <p style={{ opacity: 0.7, fontSize: '0.85rem' }}>
             Scroll to travel through the Z-axis ↓

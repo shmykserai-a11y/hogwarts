@@ -14,6 +14,13 @@ const glass: React.CSSProperties = {
     textShadow: '0 2px 10px rgba(0,0,0,0.8)',
 }
 
+const RIGHT_GUTTER_BADGE_POS: React.CSSProperties = {
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(75vw + (clamp(340px, 52vw, 680px) / 4))',
+    transform: 'translate(-50%, -50%)',
+}
+
 function HouseChip({ house }: { house: House }) {
     const meta = HOUSE_META[house]
     return (
@@ -33,6 +40,38 @@ function HouseChip({ house }: { house: House }) {
         }}>
             {meta.emoji} {meta.name}
         </span>
+    )
+}
+
+function AssignedHouseBadge({ house, footer }: { house: House; footer?: React.ReactNode }) {
+    const meta = HOUSE_META[house]
+    return (
+        <div style={{
+            ...glass,
+            ...RIGHT_GUTTER_BADGE_POS,
+            padding: '12px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '6px',
+            minWidth: '160px',
+        }}>
+            <div style={{ fontSize: '11px', letterSpacing: '2px', opacity: 0.6, textTransform: 'uppercase' }}>
+                Assigned House
+            </div>
+            <div style={{ fontSize: '28px' }}>{meta.emoji}</div>
+            <div style={{ color: meta.color, fontWeight: 'bold', letterSpacing: '2px', fontSize: '14px', textTransform: 'uppercase' }}>
+                {meta.name}
+            </div>
+            <div style={{ fontSize: '10px', opacity: 0.5, fontStyle: 'italic', textAlign: 'center' }}>
+                {meta.traits}
+            </div>
+            {footer ? (
+                <div style={{ marginTop: '4px', fontSize: '11px', opacity: 0.6 }}>
+                    {footer}
+                </div>
+            ) : null}
+        </div>
     )
 }
 
@@ -92,30 +131,11 @@ export function SortingHatHUD() {
             fontFamily: "'Cinzel', serif",
         }}>
 
-            {phase === 'verdict' && (
-                <div style={{
-                    ...glass,
-                    position: 'absolute',
-                    top: '80px',
-                    right: '24px',
-                    padding: '12px 20px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '6px',
-                    minWidth: '160px',
-                }}>
-                    <div style={{ fontSize: '11px', letterSpacing: '2px', opacity: 0.6, textTransform: 'uppercase' }}>
-                        Assigned House
-                    </div>
-                    <div style={{ fontSize: '28px' }}>{houseMeta.emoji}</div>
-                    <div style={{ color: houseMeta.color, fontWeight: 'bold', letterSpacing: '2px', fontSize: '14px', textTransform: 'uppercase' }}>
-                        {houseMeta.name}
-                    </div>
-                    <div style={{ fontSize: '10px', opacity: 0.5, fontStyle: 'italic', textAlign: 'center' }}>
-                        {houseMeta.traits}
-                    </div>
-                </div>
+            {(phase === 'questioning' || phase === 'verdict') && (
+                <AssignedHouseBadge
+                    house={targetHouse}
+                    footer={phase === 'questioning' ? (<>{currentQuestion + 1} / {QUESTIONS.length}</>) : undefined}
+                />
             )}
 
             {/* ── IDLE: Start Screen ── */}
@@ -181,35 +201,6 @@ export function SortingHatHUD() {
             {/* ── QUESTIONING: Question Panel ── */}
             {phase === 'questioning' && (
                 <>
-                    {/* Assigned house badge: vertically centered, centered within the right-side gutter */}
-                    <div style={{
-                        ...glass,
-                        position: 'absolute',
-                        top: '50%',
-                        left: 'calc(75vw + (clamp(340px, 52vw, 680px) / 4))',
-                        transform: 'translate(-50%, -50%)',
-                        padding: '12px 20px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '6px',
-                        minWidth: '160px',
-                    }}>
-                        <div style={{ fontSize: '11px', letterSpacing: '2px', opacity: 0.6, textTransform: 'uppercase' }}>
-                            Assigned House
-                        </div>
-                        <div style={{ fontSize: '28px' }}>{houseMeta.emoji}</div>
-                        <div style={{ color: houseMeta.color, fontWeight: 'bold', letterSpacing: '2px', fontSize: '14px', textTransform: 'uppercase' }}>
-                            {houseMeta.name}
-                        </div>
-                        <div style={{ fontSize: '10px', opacity: 0.5, fontStyle: 'italic', textAlign: 'center' }}>
-                            {houseMeta.traits}
-                        </div>
-                        <div style={{ marginTop: '4px', fontSize: '11px', opacity: 0.6 }}>
-                            {currentQuestion + 1} / {QUESTIONS.length}
-                        </div>
-                    </div>
-
                     <div style={{
                         ...glass,
                         position: 'absolute',

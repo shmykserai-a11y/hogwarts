@@ -44,12 +44,16 @@ type GameState = 'playing' | 'brewing' | 'success' | 'failure'
 
 interface SnapeCauldronState {
     isActive: boolean
+    isHintOpen: boolean
     targetPotion: PotionType
     addedIngredients: string[]
     gameState: GameState
     brewProgress: number // 0 to 1
 
     setIsActive: (active: boolean) => void
+    openHint: () => void
+    closeHint: () => void
+    toggleHint: () => void
     toggleIngredient: (id: string) => void
     setBrewProgress: (progress: number) => void
     evaluateBrew: () => void
@@ -58,12 +62,17 @@ interface SnapeCauldronState {
 
 export const useSnapeCauldronStore = create<SnapeCauldronState>((set, get) => ({
     isActive: false,
+    isHintOpen: false,
     targetPotion: 'livingDeath', // Default, will be randomized on start
     addedIngredients: [],
     gameState: 'playing',
     brewProgress: 0,
 
-    setIsActive: (active) => set({ isActive: active }),
+    setIsActive: (active) => set((state) => active ? ({ isActive: true }) : ({ ...state, isActive: false, isHintOpen: false })),
+
+    openHint: () => set({ isHintOpen: true }),
+    closeHint: () => set({ isHintOpen: false }),
+    toggleHint: () => set((state) => ({ isHintOpen: !state.isHintOpen })),
     
     toggleIngredient: (id) => set((state) => {
         if (state.gameState !== 'playing') return state
@@ -108,7 +117,8 @@ export const useSnapeCauldronStore = create<SnapeCauldronState>((set, get) => ({
             targetPotion: randomPotion,
             addedIngredients: [],
             gameState: 'playing',
-            brewProgress: 0
+            brewProgress: 0,
+            isHintOpen: false,
         })
     }
 }))
