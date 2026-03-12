@@ -3,4 +3,6 @@
  * Update this when adding or removing a location.
  * Both the scroll system and the unlock system read from here automatically.
  */
-export const TOTAL_PUZZLES = 13
+import { JOURNEY_SEQUENCE } from './journey-sequence'
+
+export const TOTAL_PUZZLES = JOURNEY_SEQUENCE.length

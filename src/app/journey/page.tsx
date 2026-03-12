@@ -53,7 +53,7 @@ export default function JourneyPage() {
 
                 <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>
-                        Progression: {Math.min(maxUnlockedIndex + 1, TOTAL_PUZZLES)} / {TOTAL_PUZZLES}
+                        Progression: {Math.min(Math.max(currentIdx + 1, 1), TOTAL_PUZZLES)} / {TOTAL_PUZZLES}
                     </div>
                     {isGateBlocking && (
                         <div style={{

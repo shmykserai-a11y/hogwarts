@@ -16,6 +16,7 @@ import { ThestralGrove } from './locations/08_ThestralGrove'
 import { HagridsHut } from './locations/09_HagridsHut'
 import { ZhmyrLocation } from './locations/10_Zhmyr'
 import { PensieveLocation } from './locations/11_Pensieve'
+import { FarewellLocation } from './locations/12_Farewell'
 import { UniversalHitZoneDebugger } from './UniversalHitZoneDebugger'
 import { SceneEditor } from '../3d/SceneEditor'
 
@@ -61,6 +62,7 @@ export function PuzzleCanvasContainer() {
                 <HagridsHut position={[0, 0, -240]} index={10} />
                 <AragogForest position={[0, 0, -270]} index={11} />
                 <LibrarySection position={[0, 0, -300]} index={12} />
+                <FarewellLocation position={[0, 0, -330]} index={13} />
 
                 {/* Global Hit Zone Debugger */}
                 {isDev && <UniversalHitZoneDebugger />}

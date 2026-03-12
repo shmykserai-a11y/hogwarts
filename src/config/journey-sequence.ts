@@ -12,6 +12,7 @@ export type JourneyLocationKey =
     | 'hagrids_hut'
     | 'aragog'
     | 'library'
+    | 'farewell'
 
 export type JourneyLocationMeta = {
     key: JourneyLocationKey
@@ -34,5 +35,6 @@ export const JOURNEY_SEQUENCE: JourneyLocationMeta[] = [
     { key: 'zhmyr', title: 'Zhmyr', gated: false },
     { key: 'hagrids_hut', title: "Hagrid's Hut", gated: true, gateHint: 'Find all items in time to continue' },
     { key: 'aragog', title: 'Aragog Forest', gated: false },
-    { key: 'library', title: 'Library', gated: true, gateHint: 'Hold for 3 minutes to finish' },
+    { key: 'library', title: 'Library', gated: true, gateHint: 'Hold for 3 minutes to continue' },
+    { key: 'farewell', title: 'Farewell', gated: false },
 ] as const

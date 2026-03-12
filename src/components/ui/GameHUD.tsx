@@ -82,6 +82,24 @@ function GoldButton({ onClick, color = '#ffb347', bg = 'rgba(255,179,71,0.2)', c
     bg?: string
     children: ReactNode
 }) {
+    const hoverBg = (() => {
+        // We frequently pass hex colors (e.g. "#ffb347") and also use the same value for text.
+        // If we set background to the raw color on hover, the label becomes invisible.
+        // Convert hex to rgba with a gentle alpha; otherwise fall back to a safe translucent white.
+        if (color.startsWith('#') && (color.length === 7 || color.length === 4)) {
+            const hex = color.length === 4
+                ? `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`
+                : color
+            const r = parseInt(hex.slice(1, 3), 16)
+            const g = parseInt(hex.slice(3, 5), 16)
+            const b = parseInt(hex.slice(5, 7), 16)
+            return `rgba(${r}, ${g}, ${b}, 0.35)`
+        }
+        if (color.startsWith('rgb(')) return color.replace('rgb(', 'rgba(').replace(')', ', 0.35)')
+        if (color.startsWith('rgba(')) return color
+        return 'rgba(255,255,255,0.12)'
+    })()
+
     return (
         <button
             onClick={onClick}
@@ -99,7 +117,7 @@ function GoldButton({ onClick, color = '#ffb347', bg = 'rgba(255,179,71,0.2)', c
                 textTransform: 'uppercase',
                 transition: 'background 0.2s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = color.replace(')', ',0.35)').replace('rgb', 'rgba'))}
+            onMouseEnter={e => (e.currentTarget.style.background = hoverBg)}
             onMouseLeave={e => (e.currentTarget.style.background = bg)}
         >
             {children}
