@@ -60,7 +60,7 @@ export default function JourneyPage() {
                     {Math.min(Math.max(currentIdx + 1, 1), TOTAL_PUZZLES)} / {TOTAL_PUZZLES}
                 </div>
 
-                {/* Center stack under progression: music + scroll status */}
+                {/* Center stack under progression: scroll status */}
                 <div style={{
                     position: 'absolute',
                     top: '2.6rem',
@@ -70,10 +70,8 @@ export default function JourneyPage() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     gap: '0.55rem',
-                    pointerEvents: 'auto',
+                    pointerEvents: 'none',
                 }}>
-                    <BackgroundMusic />
-
                     {isGateBlocking && (
                         <div style={{
                             pointerEvents: 'none',
@@ -179,6 +177,9 @@ export default function JourneyPage() {
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <BackgroundMusic />
+                    </div>
                 </div>
             </div>
 

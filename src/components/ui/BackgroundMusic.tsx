@@ -168,26 +168,35 @@ export function BackgroundMusic() {
         ? 'rgba(10, 14, 23, 0.46)'
         : enabled ? 'rgba(10, 14, 23, 0.32)' : 'rgba(10, 14, 23, 0.22)'
 
+    const onClick = musicState === 'needs_gesture' ? enableGesture : toggle
+
     return (
-        <div style={{
-            pointerEvents: 'auto',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.55rem',
-            padding: '0.42rem 0.62rem',
-            borderRadius: '12px',
-            border,
-            background: bg,
-            color: 'rgba(255, 248, 225, 0.92)',
-            fontSize: '0.78rem',
-            letterSpacing: '0.35px',
-            userSelect: 'none',
-            opacity: enabled ? 1 : 0.72,
-        }}>
-            <button
-                onClick={musicState === 'needs_gesture' ? enableGesture : toggle}
+        <button
+            onClick={onClick}
+            style={{
+                pointerEvents: 'auto',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.55rem',
+                padding: '0.42rem 0.62rem',
+                borderRadius: '12px',
+                border,
+                background: bg,
+                color: 'rgba(255, 248, 225, 0.92)',
+                fontSize: '0.78rem',
+                letterSpacing: '0.35px',
+                userSelect: 'none',
+                opacity: enabled ? 1 : 0.72,
+                cursor: 'pointer',
+                fontFamily: "'Cinzel', serif",
+                textAlign: 'left',
+            }}
+            title={musicState === 'needs_gesture' ? 'Enable music' : (enabled ? 'Turn music off' : 'Turn music on')}
+            aria-label={musicState === 'needs_gesture' ? 'Enable music' : (enabled ? 'Turn music off' : 'Turn music on')}
+        >
+            <span
+                aria-hidden="true"
                 style={{
-                    pointerEvents: 'auto',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -199,19 +208,16 @@ export function BackgroundMusic() {
                         ? 'rgba(255, 204, 68, 0.16)'
                         : enabled ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.03)',
                     color: '#fff8e1',
-                    cursor: 'pointer',
-                    fontFamily: "'Cinzel', serif",
+                    flexShrink: 0,
                 }}
-                title={musicState === 'needs_gesture' ? 'Enable music' : (enabled ? 'Turn music off' : 'Turn music on')}
-                aria-label={musicState === 'needs_gesture' ? 'Enable music' : (enabled ? 'Turn music off' : 'Turn music on')}
             >
                 {musicState === 'needs_gesture' ? '▶' : (enabled ? '🎵' : '🔇')}
-            </button>
-            <div style={{ whiteSpace: 'nowrap', opacity: musicState === 'needs_gesture' ? 0.95 : 0.85 }}>
+            </span>
+            <span style={{ whiteSpace: 'nowrap', opacity: musicState === 'needs_gesture' ? 0.95 : 0.85 }}>
                 <span style={{ textDecoration: (!enabled && musicState !== 'needs_gesture') ? 'line-through' : 'none' }}>
                     {label}
                 </span>
-            </div>
-        </div>
+            </span>
+        </button>
     )
 }
