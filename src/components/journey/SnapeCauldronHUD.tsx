@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { useSnapeCauldronStore, POTION_RECIPES, ALL_INGREDIENTS } from '@/hooks/use-snapecauldron'
 
 const GLASS_PANEL: React.CSSProperties = {
@@ -10,6 +11,13 @@ const GLASS_PANEL: React.CSSProperties = {
     color: '#fff',
     fontFamily: "'Cinzel', serif",
     textShadow: '0 2px 10px rgba(0,0,0,0.8)',
+}
+
+type IngredientTooltipState = {
+    visible: boolean
+    text: string
+    x: number
+    y: number
 }
 
 export function SnapeCauldronHUD() {
@@ -25,6 +33,43 @@ export function SnapeCauldronHUD() {
         resetGame,
     } = useSnapeCauldronStore()
 
+    const [tooltip, setTooltip] = useState<IngredientTooltipState>({
+        visible: false,
+        text: '',
+        x: 0,
+        y: 0,
+    })
+
+    const tooltipStyles = useMemo(() => {
+        const base: React.CSSProperties = {
+            position: 'fixed',
+            left: tooltip.x,
+            top: tooltip.y,
+            transform: tooltip.visible
+                ? 'translate(-50%, calc(-100% - 12px)) scale(1)'
+                : 'translate(-50%, calc(-100% - 10px)) scale(0.98)',
+            opacity: tooltip.visible ? 1 : 0,
+            pointerEvents: 'none',
+            zIndex: 10050,
+            padding: '10px 12px',
+            borderRadius: '12px',
+            border: '1px solid rgba(255, 179, 71, 0.38)',
+            background: 'rgba(10, 14, 23, 0.44)',
+            backdropFilter: 'blur(8px)',
+            boxShadow: '0 18px 40px rgba(0,0,0,0.45)',
+            color: 'rgba(255, 248, 225, 0.95)',
+            fontFamily: "'Cinzel', serif",
+            fontSize: '12px',
+            letterSpacing: '1.6px',
+            textTransform: 'uppercase',
+            transition: 'opacity 140ms ease, transform 140ms ease',
+            maxWidth: 'min(240px, 70vw)',
+            whiteSpace: 'nowrap',
+        }
+        return base
+    }, [tooltip.visible, tooltip.x, tooltip.y])
+
+    // Hooks must be called unconditionally. We still short-circuit rendering when inactive.
     if (!isActive) return null
 
     const recipeInfo = POTION_RECIPES[targetPotion]
@@ -33,6 +78,26 @@ export function SnapeCauldronHUD() {
 
     return (
         <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999, display: 'flex', alignItems: 'stretch' }}>
+
+            {/* ── Ingredient Tooltip (hover only on ingredients) ── */}
+            <div style={tooltipStyles} aria-hidden="true">
+                <div
+                    style={{
+                        position: 'absolute',
+                        left: '50%',
+                        bottom: '-6px',
+                        width: '10px',
+                        height: '10px',
+                        transform: 'translateX(-50%) rotate(45deg)',
+                        background: 'rgba(10, 14, 23, 0.44)',
+                        borderRight: '1px solid rgba(255, 179, 71, 0.28)',
+                        borderBottom: '1px solid rgba(255, 179, 71, 0.28)',
+                        borderBottomRightRadius: '2px',
+                        filter: 'drop-shadow(0 10px 18px rgba(0,0,0,0.35))',
+                    }}
+                />
+                <span style={{ position: 'relative', zIndex: 1 }}>{tooltip.text}</span>
+            </div>
 
             {/* ── Hint Overlay (parchment) ── */}
             {isHintOpen && (
@@ -94,7 +159,6 @@ export function SnapeCauldronHUD() {
                                     color: '#1a1208',
                                 }}
                                 aria-label="Close hint"
-                                title="Close"
                             >
                                 ×
                             </button>
@@ -166,6 +230,22 @@ export function SnapeCauldronHUD() {
                             <button
                                 key={ing.id}
                                 onClick={() => toggleIngredient(ing.id)}
+                                onMouseEnter={(e) => {
+                                    const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect()
+                                    const pad = 14
+                                    const xRaw = rect.left + rect.width / 2
+                                    const x = Math.min(window.innerWidth - pad, Math.max(pad, xRaw))
+                                    const y = Math.max(pad, rect.top)
+                                    setTooltip({
+                                        visible: true,
+                                        text: ing.name,
+                                        x,
+                                        y,
+                                    })
+                                }}
+                                onMouseLeave={() => {
+                                    setTooltip((t) => ({ ...t, visible: false }))
+                                }}
                                 style={{
                                     pointerEvents: 'auto',
                                     cursor: 'pointer',

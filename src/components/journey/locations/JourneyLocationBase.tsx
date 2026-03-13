@@ -104,6 +104,10 @@ export interface JourneyLocationConfig {
     position: [number, number, number]
     scale?: [number, number, number]
     bgUrl: string
+    /** Optional mid-layer (drawn between bg and fg). Useful for text/FX that must not cover the foreground. */
+    midUrl?: string
+    /** Optional mid-layer local Z (default is halfway between bg and fg). */
+    midLocalZ?: number
     /** Optional foreground layer. Omit for background-only locations. */
     fgUrl?: string
     /**
@@ -115,13 +119,14 @@ export interface JourneyLocationConfig {
     /** @deprecated use bobbingMode='none' */
     disableBobbing?: boolean
     children?: React.ReactNode
+    midChildren?: React.ReactNode
     fgChildren?: React.ReactNode
     /** Optional image to crossfade to (e.g. puzzle solved reveal). 0=bg only, 1=reveal only. */
     revealUrl?: string
     revealProgress?: number
 }
 
-export function JourneyLocationBase({ index, position, scale = [1, 1, 1], bgUrl, fgUrl, bobbingMode, disableBobbing = false, children, fgChildren, revealUrl, revealProgress = 0 }: JourneyLocationConfig) {
+export function JourneyLocationBase({ index, position, scale = [1, 1, 1], bgUrl, midUrl, midLocalZ, fgUrl, bobbingMode, disableBobbing = false, children, midChildren, fgChildren, revealUrl, revealProgress = 0 }: JourneyLocationConfig) {
     const groupRef = useRef<THREE.Group>(null)
     const timeRef = useRef(0)
     const locationIndex = usePuzzleLocationIndex()
@@ -135,6 +140,7 @@ export function JourneyLocationBase({ index, position, scale = [1, 1, 1], bgUrl,
     // Deeper Z spread for more parallax
     const bgLocalZ = -15
     const fgLocalZ = 0
+    const midZ = midLocalZ ?? (bgLocalZ + fgLocalZ) / 2
 
     // For z-bobbing: fg is only ~8 units from camera, so ±1.5 unit movement changes
     // apparent size significantly (8/9.5 = 84%). Use larger multiplier to prevent edge gaps.
@@ -180,6 +186,20 @@ export function JourneyLocationBase({ index, position, scale = [1, 1, 1], bgUrl,
                     >
                         {children}
                     </JourneyLayer>
+                    {midUrl && (
+                        <JourneyLayer
+                            textureUrl={midUrl}
+                            localZ={midZ}
+                            opacity={Math.max(0, targetOpacity)}
+                            focusedCameraZ={focusedCameraZ}
+                            groupZ={position[2]}
+                            // Mid layer behaves closer to bg than fg (it's usually text or FX).
+                            sizeMultiplier={bgSizeMultiplier}
+                            fog={false}
+                        >
+                            {midChildren}
+                        </JourneyLayer>
+                    )}
                     {/* Reveal crossfade layer — sits just in front of bg */}
                     {revealUrl && revealProgress > 0 && (
                         <JourneyLayer

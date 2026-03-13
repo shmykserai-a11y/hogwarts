@@ -16,15 +16,15 @@ type Persisted = {
 function readState(): Persisted {
     try {
         const raw = localStorage.getItem(STORAGE_KEY)
-        if (!raw) return { enabled: true, trackIndex: 0, time: 0 }
+        if (!raw) return { enabled: false, trackIndex: 0, time: 0 }
         const parsed = JSON.parse(raw)
         return {
-            enabled: parsed?.enabled !== false,
+            enabled: parsed?.enabled === true,
             trackIndex: Number.isFinite(parsed?.trackIndex) ? parsed.trackIndex : 0,
             time: Number.isFinite(parsed?.time) ? parsed.time : 0,
         }
     } catch {
-        return { enabled: true, trackIndex: 0, time: 0 }
+        return { enabled: false, trackIndex: 0, time: 0 }
     }
 }
 
@@ -45,12 +45,11 @@ export function BackgroundMusic() {
     ]), [])
 
     const audioRef = useRef<HTMLAudioElement | null>(null)
-    const initialEnabled = (() => {
-        if (typeof window === 'undefined') return true
-        return readState().enabled
-    })()
-    const [enabled, setEnabled] = useState<boolean>(initialEnabled)
-    const [musicState, setMusicState] = useState<MusicState>(initialEnabled ? 'playing' : 'paused')
+    // Important: don't read `localStorage` during render (it causes SSR/CSR hydration mismatches).
+    // We'll hydrate from storage after mount.
+    const [hydrated, setHydrated] = useState(false)
+    const [enabled, setEnabled] = useState<boolean>(false)
+    const [musicState, setMusicState] = useState<MusicState>('paused')
 
     const trackIndexRef = useRef(0)
     const enabledRef = useRef(enabled)
@@ -58,6 +57,16 @@ export function BackgroundMusic() {
     useEffect(() => {
         enabledRef.current = enabled
     }, [enabled])
+
+    // Hydrate persisted preference after mount (avoids hydration mismatch).
+    useEffect(() => {
+        const persisted = readState()
+        enabledRef.current = persisted.enabled
+        setEnabled(persisted.enabled)
+        setMusicState(persisted.enabled ? 'playing' : 'paused')
+        setHydrated(true)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     // Init audio element once.
     useEffect(() => {
@@ -120,6 +129,7 @@ export function BackgroundMusic() {
 
     // Keep enabled state in sync (pause/resume and persist).
     useEffect(() => {
+        if (!hydrated) return
         const audio = audioRef.current
         if (!audio) return
 
@@ -191,7 +201,6 @@ export function BackgroundMusic() {
                 fontFamily: "'Cinzel', serif",
                 textAlign: 'left',
             }}
-            title={musicState === 'needs_gesture' ? 'Enable music' : (enabled ? 'Turn music off' : 'Turn music on')}
             aria-label={musicState === 'needs_gesture' ? 'Enable music' : (enabled ? 'Turn music off' : 'Turn music on')}
         >
             <span

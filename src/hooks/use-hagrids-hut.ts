@@ -15,16 +15,16 @@ export interface HutItem {
 
 export const HUT_ITEMS: HutItem[] = [
     // ✅ all calibrated via debugger
-    { id: 'fang',         label: 'Fang the Dog',   emoji: '🐕', hitX: -0.27, hitY: -0.30, hitW: 0.15, hitH: 0.22 },
-    { id: 'firewood',     label: 'Firewood',        emoji: '🪵', hitX: -0.41, hitY: -0.38, hitW: 0.12, hitH: 0.21 },
-    { id: 'fishing_net',  label: 'Fishing Net',     emoji: '🪤', hitX: -0.02, hitY:  0.36, hitW: 0.11, hitH: 0.18 },
-    { id: 'crossbow',     label: 'Crossbow',        emoji: '🏹', hitX:  0.44, hitY:  0.00, hitW: 0.05, hitH: 0.36 },
-    { id: 'big_basket',   label: 'Big Basket',      emoji: '🧺', hitX:  0.20, hitY:  0.43, hitW: 0.07, hitH: 0.13 },
-    { id: 'dragon_egg',   label: 'Dragon Egg',      emoji: '🥚', hitX:  0.26, hitY:  0.14, hitW: 0.07, hitH: 0.13 },
-    { id: 'teapot',       label: 'Teapot',          emoji: '🫖', hitX:  0.13, hitY: -0.13, hitW: 0.09, hitH: 0.11 },
-    { id: 'cauldron',     label: 'Cauldron',        emoji: '🪣', hitX: -0.21, hitY: -0.06, hitW: 0.08, hitH: 0.12 },
-    { id: 'window',       label: 'Window',          emoji: '🪟', hitX: -0.46, hitY:  0.09, hitW: 0.06, hitH: 0.23 },
-    { id: 'sleeve_patch', label: 'Sleeve Patch',    emoji: '🧵', hitX:  0.33, hitY: -0.03, hitW: 0.04, hitH: 0.09 },
+    { id: 'fang', label: 'Fang the Dog', emoji: '🐕', hitX: -0.27, hitY: -0.30, hitW: 0.15, hitH: 0.22 },
+    { id: 'firewood', label: 'Firewood', emoji: '🪵', hitX: -0.41, hitY: -0.38, hitW: 0.12, hitH: 0.21 },
+    { id: 'fishing_net', label: 'Fishing Net', emoji: '🪤', hitX: -0.02, hitY: 0.36, hitW: 0.11, hitH: 0.18 },
+    { id: 'crossbow', label: 'Arrows', emoji: '🏹', hitX: 0.44, hitY: 0.00, hitW: 0.05, hitH: 0.36 },
+    { id: 'big_basket', label: 'Big Basket', emoji: '🧺', hitX: 0.20, hitY: 0.43, hitW: 0.07, hitH: 0.13 },
+    { id: 'dragon_egg', label: 'Dragon Egg', emoji: '🥚', hitX: 0.26, hitY: 0.14, hitW: 0.07, hitH: 0.13 },
+    { id: 'teapot', label: 'Teapot', emoji: '🫖', hitX: 0.13, hitY: -0.13, hitW: 0.09, hitH: 0.11 },
+    { id: 'cauldron', label: 'Cauldron', emoji: '🪣', hitX: -0.21, hitY: -0.06, hitW: 0.08, hitH: 0.12 },
+    { id: 'window', label: 'Window', emoji: '🪟', hitX: -0.46, hitY: 0.09, hitW: 0.06, hitH: 0.23 },
+    { id: 'sleeve_patch', label: 'Sleeve Patch', emoji: '🧵', hitX: 0.33, hitY: -0.03, hitW: 0.04, hitH: 0.09 },
 ]
 
 

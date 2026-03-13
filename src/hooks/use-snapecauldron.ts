@@ -25,7 +25,7 @@ export const POTION_RECIPES: Record<PotionType, { name: string; ingredients: str
 }
 
 export const ALL_INGREDIENTS: IngredientDef[] = [
-    { id: 'asphodel_roots', name: 'Powdered Root of Asphodel', url: withBasePath('/textures/journey/snape-cauldron/ingredients/asphodel_roots.webp') },
+    { id: 'asphodel_roots', name: 'Root of Asphodel', url: withBasePath('/textures/journey/snape-cauldron/ingredients/asphodel_roots.webp') },
     { id: 'wormwood_tincture', name: 'Infusion of Wormwood', url: withBasePath('/textures/journey/snape-cauldron/ingredients/wormwood_tincture.webp') },
     { id: 'sopophorous_beans', name: 'Sopophorous Beans', url: withBasePath('/textures/journey/snape-cauldron/ingredients/sopophorous_beans.webp') },
     { id: 'lacewing_flies', name: 'Lacewing Flies', url: withBasePath('/textures/journey/snape-cauldron/ingredients/lacewing_flies.webp') },
@@ -73,10 +73,10 @@ export const useSnapeCauldronStore = create<SnapeCauldronState>((set, get) => ({
     openHint: () => set({ isHintOpen: true }),
     closeHint: () => set({ isHintOpen: false }),
     toggleHint: () => set((state) => ({ isHintOpen: !state.isHintOpen })),
-    
+
     toggleIngredient: (id) => set((state) => {
         if (state.gameState !== 'playing') return state
-        
+
         if (state.addedIngredients.includes(id)) {
             // Remove if already selected
             return { addedIngredients: state.addedIngredients.filter(i => i !== id) }
@@ -88,9 +88,9 @@ export const useSnapeCauldronStore = create<SnapeCauldronState>((set, get) => ({
 
     setBrewProgress: (progress) => set((state) => {
         if (state.gameState === 'success' || state.gameState === 'failure') return state
-        
+
         // If progress > 0, we are brewing. If 0, we are just playing (cancelled brew)
-        return { 
+        return {
             brewProgress: progress,
             gameState: progress > 0 ? 'brewing' : 'playing'
         }
@@ -112,7 +112,7 @@ export const useSnapeCauldronStore = create<SnapeCauldronState>((set, get) => ({
     resetGame: () => {
         const potions: PotionType[] = ['livingDeath', 'polyjuice', 'boils']
         const randomPotion = potions[Math.floor(Math.random() * potions.length)]
-        
+
         set({
             targetPotion: randomPotion,
             addedIngredients: [],

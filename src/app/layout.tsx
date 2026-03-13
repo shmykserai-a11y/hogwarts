@@ -3,8 +3,8 @@ import './globals.css'
 import { LevaContainer } from '@/components/ui/LevaContainer'
 
 export const metadata: Metadata = {
-  title: 'Hogwarts Interactive',
-  description: 'An interactive magical journey through Hogwarts.',
+  title: 'Hogwarts',
+  description: 'A magical journey through Hogwarts.',
 }
 
 export default function RootLayout({
